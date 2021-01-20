@@ -1,5 +1,7 @@
 package projetal2020
 
+import scala.util.{Failure, Success}
+
 object Grid {
   def apply(boundX: Int, boundY: Int): Grid = {
     new Grid(boundX, boundY)
@@ -15,9 +17,15 @@ class Grid(boundaryX: Int, boundaryY: Int) {
   def moveMower(instructions: String, mower: Mower): Unit = {
     for (charac <- instructions.toList) {
       if (charac.equals('A')) {
-        mower.move(boundaryX, boundaryY)
+        mower.getNextMove(boundaryX, boundaryY) match {
+          case Success(posInfo)   => mower.updatePosition(posInfo)
+          case Failure(exception) => println(exception.getMessage)
+        }
       } else {
-        mower.changeDirection(charac)
+        mower.getNewDirection(charac) match {
+          case Success(newDir)    => mower.updateDirection(newDir)
+          case Failure(exception) => println(exception.getMessage)
+        }
       }
     }
   }

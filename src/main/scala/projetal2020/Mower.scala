@@ -3,72 +3,92 @@ package projetal2020
 import scala.collection.mutable
 import play.api.libs.json.{JsObject, Json}
 
+import scala.util.{Failure, Success, Try}
+
 class Mower(x: Int, y: Int, dir: Char) {
 
-  val coords: mutable.HashMap[String, Int] = new mutable.HashMap()
+  val mowerInfo: mutable.HashMap[String, Any] =
+    new mutable.HashMap[String, Any]()
+  /*val coords: mutable.HashMap[String, Int] = new mutable.HashMap()
   val direction: mutable.HashMap[String, Char] = new mutable.HashMap()
   coords("x") = x
   coords("y") = y
-  direction("dir") = dir
+  direction("dir") = dir*/
+  mowerInfo("x") = x
+  mowerInfo("y") = y
+  mowerInfo("dir") = dir
 
-  @throws(classOf[DonneesIncorrectesException])
-  def move(boundaryX: Int, boundaryY: Int): Unit = {
-    direction("dir") match {
+  def updatePosition(newPosInfo: (String, Int)): Unit = {
+    mowerInfo(newPosInfo._1) = mowerInfo(newPosInfo._1).toString.toInt + newPosInfo._2
+  }
+
+  def updateDirection(newDirection: Char): Unit = {
+    mowerInfo("dir") = newDirection
+  }
+
+  def getNextMove(boundaryX: Int, boundaryY: Int): Try[(String, Int)] = {
+    mowerInfo("dir") match {
       case 'N' => // Nord
-        if (coords("y") + 1 <= boundaryY) {
-          coords("y") += 1
+        if (mowerInfo("y").toString.toInt + 1 <= boundaryY) {
+          Success(("y", 1))
         } else {
-          println("out of the map in north")
+          Failure(new OutOfGridException("out of the map in north"))
         }
       case 'E' => //  Est
-        if (coords("x") + 1 <= boundaryX) {
-          coords("x") += 1
+        if (mowerInfo("x").toString.toInt + 1 <= boundaryX) {
+          Success(("x", 1))
         } else {
-          println("out of the map in east")
+          Failure(new OutOfGridException("out of the map in east"))
         }
       case 'W' => // Ouest
-        if (coords("x") - 1 >= 0) {
-          coords("x") -= 1
+        if (mowerInfo("x").toString.toInt - 1 >= 0) {
+          Success(("x", -1))
         } else {
-          println("out of the map in west")
+          Failure(new OutOfGridException("out of the map in west"))
         }
       case 'S' => // Sud
-        if (coords("y") - 1 >= 0) {
-          coords("y") -= 1
+        if (mowerInfo("y").toString.toInt - 1 >= 0) {
+          Success(("y", -1))
         } else {
-          println("out of the map in south")
+          Failure(new OutOfGridException("out of the map in south"))
         }
+      case _ =>
+        Failure(
+          new DonneesIncorrectesException("Error in the mower direction!")
+        )
     }
   }
 
-  @throws(classOf[DonneesIncorrectesException])
-  def changeDirection(instruction: Char): Unit = {
-    direction("dir") match {
+  def getNewDirection(instruction: Char): Try[Char] = {
+    mowerInfo("dir") match {
       case 'N' =>
         if (instruction.equals('G')) {
-          direction("dir") = 'W'
+          Success('W')
         } else {
-          direction("dir") = 'E'
+          Success('E')
         }
       case 'E' =>
         if (instruction.equals('G')) {
-          direction("dir") = 'N'
+          Success('N')
         } else {
-          direction("dir") = 'S'
+          Success('S')
         }
       case 'W' =>
         if (instruction.equals('G')) {
-          direction("dir") = 'S'
+          Success('S')
         } else {
-          direction("dir") = 'N'
+          Success('N')
         }
       case 'S' =>
         if (instruction.equals('G')) {
-          direction("dir") = 'E'
+          Success('E')
         } else {
-          direction("dir") = 'W'
+          Success('W')
         }
-      case _ => throw new DonneesIncorrectesException("Error in the lawn mower direction!")
+      case _ =>
+        Failure(
+          new DonneesIncorrectesException("Error in the mower direction!")
+        )
     }
   }
 
@@ -79,7 +99,7 @@ class Mower(x: Int, y: Int, dir: Char) {
 
   lazy val info: JsObject = Json.obj(
     "point" -> Json
-      .obj("x" -> coords("x").toString, "y" -> coords("y").toString),
-    "direction" -> direction("dir").toString
+      .obj("x" -> mowerInfo("x").toString, "y" -> mowerInfo("y").toString),
+    "direction" -> mowerInfo("dir").toString
   )
 }
