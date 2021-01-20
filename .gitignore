@@ -1,0 +1,6 @@
+target/
+project/target
+project/project/target
+.bsp
+scala-2.13.3.deb
+scala-2.13.3.deb.1
