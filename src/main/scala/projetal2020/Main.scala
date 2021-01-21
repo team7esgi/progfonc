@@ -8,8 +8,8 @@ object Main extends App {
   FileReader.readInstructions(
     "/home/thesaint/Bureau/projet_scala/progfun-al-2020/src/main/scala/projetal2020/Instructions"
   ) match {
-    case Success(n) => printOutput(n)
-    case Failure(e) => print(e.getMessage)
+    case Success(jsonOutput) => printOutput(jsonOutput)
+    case Failure(exception) => print(exception.getMessage)
   }
 
   def printOutput(result: JsObject): Unit = {
