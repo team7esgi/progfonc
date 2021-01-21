@@ -9,11 +9,6 @@ class Mower(x: Int, y: Int, dir: Char) {
 
   val mowerInfo: mutable.HashMap[String, Any] =
     new mutable.HashMap[String, Any]()
-  /*val coords: mutable.HashMap[String, Int] = new mutable.HashMap()
-  val direction: mutable.HashMap[String, Char] = new mutable.HashMap()
-  coords("x") = x
-  coords("y") = y
-  direction("dir") = dir*/
   mowerInfo("x") = x
   mowerInfo("y") = y
   mowerInfo("dir") = dir
@@ -64,26 +59,42 @@ class Mower(x: Int, y: Int, dir: Char) {
       case 'N' =>
         if (instruction.equals('G')) {
           Success('W')
-        } else {
+        } else if (instruction.equals('D')) {
           Success('E')
+        } else {
+          Failure(
+            new DonneesIncorrectesException("Mauvaise instruction de direction")
+          )
         }
       case 'E' =>
         if (instruction.equals('G')) {
           Success('N')
-        } else {
+        } else if (instruction.equals('D')) {
           Success('S')
+        } else {
+          Failure(
+            new DonneesIncorrectesException("Mauvaise instruction de direction")
+          )
         }
       case 'W' =>
         if (instruction.equals('G')) {
           Success('S')
-        } else {
+        } else if (instruction.equals('D')) {
           Success('N')
+        } else {
+          Failure(
+            new DonneesIncorrectesException("Mauvaise instruction de direction")
+          )
         }
       case 'S' =>
         if (instruction.equals('G')) {
           Success('E')
-        } else {
+        } else if (instruction.equals('D')) {
           Success('W')
+        } else {
+          Failure(
+            new DonneesIncorrectesException("Mauvaise instruction de direction")
+          )
         }
       case _ =>
         Failure(

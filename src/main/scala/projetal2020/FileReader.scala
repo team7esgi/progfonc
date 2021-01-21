@@ -31,7 +31,7 @@ object FileReader {
     if (instructions.size % 2 == 0) {
       Failure(
         new DonneesIncorrectesException(
-          "Les informations du fichier ne sont pas correctes."
+          "Les informations du fichier ne sont pas correctes." + instructions.size.toString
         )
       )
     } else {
