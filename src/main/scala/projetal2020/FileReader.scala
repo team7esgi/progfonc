@@ -49,7 +49,7 @@ object FileReader {
   def checkGridBoundaryInfo(gridInfo: String): Try[(Int, Int)] = {
     try {
       val infos = gridInfo.trim.split(" ")
-      if (infos.size > 2) {
+      if (infos.size != 2) {
         Failure(
           new DonneesIncorrectesException(
             "Les données des limites de la grille sont invalides."
@@ -70,8 +70,10 @@ object FileReader {
 
   def checkMowerInitialInfo(mowerInfo: String): Try[(Int, Int, Char)] = {
     try {
+      val directions = List('N', 'S', 'E', 'W')
       val infos = mowerInfo.trim.split(" ")
-      if (infos.size > 3 || infos(2).toCharArray()(0).isDigit) {
+      val mowerDirection = infos(2).toCharArray()(0)
+      if (infos.size != 3 || !directions.contains(mowerDirection)) {
         Failure(
           new DonneesIncorrectesException(
             "Les données de la tondeuse sont invalides."
